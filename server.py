@@ -10,6 +10,7 @@ HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "4173"))
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 DEFAULT_OLLAMA_MODEL = os.environ.get("DEFAULT_OLLAMA_MODEL", "qwen3-coder:480b-cloud")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 PYQS = [
     {"id": 1, "subject": "Physics", "year": 2024, "question": "A block slides down an incline of angle θ with friction coefficient μ. Find acceleration."},
@@ -22,6 +23,9 @@ PYQS = [
 
 
 class AppHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=BASE_DIR, **kwargs)
+
     def _send_json(self, status, payload):
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
@@ -84,6 +88,9 @@ class AppHandler(SimpleHTTPRequestHandler):
             except Exception as exc:
                 self._send_json(500, {"error": "Unexpected server error", "detail": str(exc)})
             return
+
+        if parsed.path == "/":
+            self.path = "/index.html"
 
         return super().do_GET()
 
