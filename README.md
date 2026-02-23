@@ -13,7 +13,7 @@ Open: `http://127.0.0.1:4173`
 
 ```bash
 ollama serve
-ollama pull llama3.1:8b
+ollama pull qwen3-coder:480b-cloud
 ```
 
 The backend calls local Ollama at `http://127.0.0.1:11434/api/chat`.
@@ -27,4 +27,12 @@ If config is not filled, app still works but Firebase save is skipped.
 
 - `GET /api/health`
 - `GET /api/pyqs?subject=Physics&year=2024`
-- `POST /api/ask` with JSON body `{ "model": "llama3.1:8b", "doubt": "..." }`
+- `GET /api/models`
+- `POST /api/ask` with JSON body `{ "model": "qwen3-coder:480b-cloud", "doubt": "..." }`
+
+
+You can override default selected model via env:
+
+```bash
+DEFAULT_OLLAMA_MODEL=qwen3-coder:480b-cloud python3 server.py
+```

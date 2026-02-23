@@ -69,16 +69,15 @@
 
       <section id="ai-tutor" class="container section">
         <h2>AI Doubt Solver (Local Ollama Models)</h2>
-        <p class="subtitle">Model local machine par pull hona chahiye (example: <code>ollama pull llama3.1:8b</code>).</p>
+        <p class="subtitle">Model local machine par pull hona chahiye (example: <code>ollama pull qwen3-coder:480b-cloud</code>).</p>
 
         <div class="ai-panel">
           <div class="ai-config">
             <label for="ollama-model">Local Ollama Model</label>
             <select id="ollama-model">
-              <option value="llama3.1:8b">llama3.1:8b</option>
-              <option value="qwen2.5:7b">qwen2.5:7b</option>
-              <option value="deepseek-r1:8b">deepseek-r1:8b</option>
+              <option value="qwen3-coder:480b-cloud">qwen3-coder:480b-cloud</option>
             </select>
+            <p id="model-status" class="muted small-text">Loading local models from Ollama...</p>
 
             <label for="student-name">Student Name</label>
             <input id="student-name" type="text" placeholder="Your name" />

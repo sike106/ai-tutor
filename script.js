@@ -4,11 +4,15 @@ const FIREBASE_CONFIG = {
   projectId: 'REPLACE_ME',
 };
 
+const DEFAULT_MODEL = 'qwen3-coder:480b-cloud';
+
 const yearEl = document.getElementById('year');
 const statusEl = document.getElementById('ai-status');
 const answerEl = document.getElementById('ai-answer');
 const solveBtn = document.getElementById('solve-btn');
 const pyqListEl = document.getElementById('pyq-list');
+const modelSelectEl = document.getElementById('ollama-model');
+const modelStatusEl = document.getElementById('model-status');
 
 yearEl.textContent = new Date().getFullYear();
 
@@ -30,8 +34,44 @@ async function saveDoubtToFirebase(payload) {
   }
 }
 
+function setModelOptions(models, preferredModel) {
+  const seen = new Set();
+  const allModels = [preferredModel, ...models].filter((name) => {
+    if (!name || seen.has(name)) return false;
+    seen.add(name);
+    return true;
+  });
+
+  modelSelectEl.innerHTML = allModels.map((name) => `<option value="${name}">${name}</option>`).join('');
+  modelSelectEl.value = allModels.includes(preferredModel) ? preferredModel : allModels[0];
+}
+
+async function loadLocalModels() {
+  try {
+    const response = await fetch('/api/models');
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || 'Could not load local models');
+
+    const models = Array.isArray(data.items) ? data.items : [];
+    const preferredModel = data.default || DEFAULT_MODEL;
+
+    if (!models.length) {
+      setModelOptions([], preferredModel);
+      modelStatusEl.textContent = 'No local model listed by Ollama. Model name manually type karne ke liye backend default use hoga.';
+      return;
+    }
+
+    setModelOptions(models, preferredModel);
+    modelStatusEl.textContent = `Loaded ${models.length} model(s) from local Ollama.`;
+  } catch (error) {
+    setModelOptions([], DEFAULT_MODEL);
+    modelStatusEl.textContent = `Model auto-load failed: ${error.message}`;
+  }
+}
+
 async function askLocalOllama() {
-  const model = document.getElementById('ollama-model').value;
+  const model = modelSelectEl.value || DEFAULT_MODEL;
   const doubt = document.getElementById('doubt-input').value.trim();
   const studentName = document.getElementById('student-name').value.trim() || 'Anonymous';
 
@@ -42,7 +82,7 @@ async function askLocalOllama() {
   }
 
   solveBtn.disabled = true;
-  statusEl.textContent = 'Thinking... asking local Ollama model from backend.';
+  statusEl.textContent = `Thinking... asking ${model} from backend.`;
   answerEl.textContent = '';
 
   try {
@@ -108,4 +148,5 @@ async function loadPyqs() {
 solveBtn.addEventListener('click', askLocalOllama);
 document.getElementById('load-pyq-btn').addEventListener('click', loadPyqs);
 
+loadLocalModels();
 loadPyqs();

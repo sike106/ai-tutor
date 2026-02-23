@@ -9,6 +9,7 @@ from urllib.error import URLError, HTTPError
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "4173"))
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+DEFAULT_OLLAMA_MODEL = os.environ.get("DEFAULT_OLLAMA_MODEL", "qwen3-coder:480b-cloud")
 
 PYQS = [
     {"id": 1, "subject": "Physics", "year": 2024, "question": "A block slides down an incline of angle θ with friction coefficient μ. Find acceleration."},
@@ -64,6 +65,26 @@ class AppHandler(SimpleHTTPRequestHandler):
             self._send_json(200, {"items": data})
             return
 
+        if parsed.path == "/api/models":
+            req = Request(f"{OLLAMA_BASE_URL}/api/tags", method="GET")
+            try:
+                with urlopen(req, timeout=20) as resp:
+                    resp_data = json.loads(resp.read().decode("utf-8"))
+
+                models = [item.get("name") for item in resp_data.get("models", []) if item.get("name")]
+                self._send_json(200, {"items": models, "default": DEFAULT_OLLAMA_MODEL})
+            except HTTPError as exc:
+                detail = exc.read().decode("utf-8")
+                self._send_json(502, {"error": f"Ollama HTTP error {exc.code}", "detail": detail})
+            except URLError as exc:
+                self._send_json(502, {
+                    "error": "Could not reach local Ollama server. Ensure `ollama serve` is running.",
+                    "detail": str(exc),
+                })
+            except Exception as exc:
+                self._send_json(500, {"error": "Unexpected server error", "detail": str(exc)})
+            return
+
         return super().do_GET()
 
     def do_POST(self):
@@ -76,7 +97,7 @@ class AppHandler(SimpleHTTPRequestHandler):
                 self._send_json(400, {"error": "Invalid JSON payload"})
                 return
 
-            model = payload.get("model", "llama3.1:8b")
+            model = payload.get("model", DEFAULT_OLLAMA_MODEL)
             doubt = (payload.get("doubt") or "").strip()
 
             if not doubt:
