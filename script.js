@@ -46,12 +46,40 @@ function setModelOptions(models, preferredModel) {
   modelSelectEl.value = allModels.includes(preferredModel) ? preferredModel : allModels[0];
 }
 
+function parseTextErrorPrefix(text) {
+  if (!text) return 'No response body';
+  const trimmed = text.trim();
+  if (!trimmed) return 'Empty response body';
+  return trimmed.slice(0, 180);
+}
+
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, options);
+  const contentType = response.headers.get('content-type') || '';
+  const raw = await response.text();
+
+  if (!contentType.includes('application/json')) {
+    const bodyPreview = parseTextErrorPrefix(raw);
+    throw new Error(`Expected JSON from ${url} but got ${contentType || 'unknown content-type'}: ${bodyPreview}`);
+  }
+
+  let data;
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    throw new Error(`Invalid JSON received from ${url}`);
+  }
+
+  if (!response.ok) {
+    throw new Error(data.error || `Request failed with status ${response.status}`);
+  }
+
+  return data;
+}
+
 async function loadLocalModels() {
   try {
-    const response = await fetch('/api/models');
-    const data = await response.json();
-
-    if (!response.ok) throw new Error(data.error || 'Could not load local models');
+    const data = await requestJson('/api/models');
 
     const models = Array.isArray(data.items) ? data.items : [];
     const preferredModel = data.default || DEFAULT_MODEL;
@@ -86,14 +114,11 @@ async function askLocalOllama() {
   answerEl.textContent = '';
 
   try {
-    const response = await fetch('/api/ask', {
+    const data = await requestJson('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, doubt }),
     });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Request failed');
 
     statusEl.textContent = `Solved using local model ${data.model}.`;
     answerEl.textContent = data.answer;
@@ -113,9 +138,7 @@ async function loadPyqs() {
   pyqListEl.innerHTML = '<p class="muted">Loading PYQs...</p>';
 
   try {
-    const response = await fetch(`/api/pyqs?subject=${encodeURIComponent(subject)}&year=${encodeURIComponent(year)}`);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Could not load PYQs');
+    const data = await requestJson(`/api/pyqs?subject=${encodeURIComponent(subject)}&year=${encodeURIComponent(year)}`);
 
     if (!data.items.length) {
       pyqListEl.innerHTML = '<p class="muted">No PYQs found for selected filter.</p>';
