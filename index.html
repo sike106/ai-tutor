@@ -17,6 +17,7 @@
       <div class="brand">JEE Challenger</div>
       <nav>
         <a href="#features">Features</a>
+        <a href="#ai-tutor">AI Tutor</a>
         <a href="#results">Results</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -29,11 +30,11 @@
           <p class="eyebrow">India's Focused JEE Prep Platform</p>
           <h1>Turn daily effort into a top JEE rank.</h1>
           <p class="subtitle">
-            Structured study plans, adaptive practice, and instant analytics built for JEE Main + Advanced aspirants.
+            Structured study plans, adaptive practice, instant analytics, and an AI tutor powered by Ollama Cloud models.
           </p>
           <div class="cta-row">
             <a class="btn" href="#join">Start Free Trial</a>
-            <a class="btn btn-ghost" href="#features">View Curriculum</a>
+            <a class="btn btn-ghost" href="#ai-tutor">Try AI Doubt Solver</a>
           </div>
           <div class="stats-inline">
             <span><strong>2.5L+</strong> Questions Solved</span>
@@ -72,6 +73,42 @@
             <p>Ask doubts anytime and get guidance from IIT/NIT mentors in dedicated sessions.</p>
           </article>
         </div>
+      </section>
+
+      <section id="ai-tutor" class="container section">
+        <h2>AI Doubt Solver (Ollama Cloud Models)</h2>
+        <p class="subtitle">Connect your Ollama Cloud API key and ask any JEE Physics, Chemistry, or Maths question.</p>
+
+        <div class="ai-panel">
+          <div class="ai-config">
+            <label for="ollama-api-key">Ollama Cloud API Key</label>
+            <input id="ollama-api-key" type="password" placeholder="ollama_..." />
+
+            <label for="ollama-model">Model</label>
+            <select id="ollama-model">
+              <option value="llama3.1:8b">llama3.1:8b</option>
+              <option value="llama3.1:70b">llama3.1:70b</option>
+              <option value="qwen2.5:72b">qwen2.5:72b</option>
+              <option value="deepseek-r1:70b">deepseek-r1:70b</option>
+            </select>
+          </div>
+
+          <div class="ai-chat">
+            <label for="doubt-input">Your Doubt</label>
+            <textarea
+              id="doubt-input"
+              rows="5"
+              placeholder="Example: A projectile is launched with speed u at angle θ. Derive the equation of trajectory and explain each term."
+            ></textarea>
+            <button id="solve-btn" class="btn" type="button">Get AI Solution</button>
+          </div>
+        </div>
+
+        <article class="ai-output" id="ai-output" aria-live="polite">
+          <h3>AI Response</h3>
+          <p id="ai-status" class="muted">Enter your doubt and click “Get AI Solution”.</p>
+          <pre id="ai-answer"></pre>
+        </article>
       </section>
 
       <section id="results" class="container section result-band">

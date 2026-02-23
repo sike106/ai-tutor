@@ -47,6 +47,7 @@ nav a { color: var(--muted); text-decoration: none; }
   border-radius: .8rem;
   font-weight: 600;
   border: 1px solid transparent;
+  cursor: pointer;
 }
 .btn-small { padding: .55rem 1rem; }
 .btn-ghost {
@@ -71,7 +72,9 @@ h1 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.12; margin: 0.5rem 0 1r
 .card,
 .metric-card,
 .faq details,
-.cta-banner {
+.cta-banner,
+.ai-panel,
+.ai-output {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 1rem;
@@ -105,6 +108,42 @@ h1 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.12; margin: 0.5rem 0 1r
 blockquote { margin: 0; }
 cite { display: block; margin-top: .8rem; color: var(--secondary); font-style: normal; }
 
+.ai-panel {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1rem;
+}
+.ai-config,
+.ai-chat {
+  display: grid;
+  gap: .55rem;
+}
+label { font-weight: 600; font-size: .95rem; }
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(9, 16, 36, 0.9);
+  color: var(--text);
+  border-radius: .65rem;
+  padding: .7rem .8rem;
+  font: inherit;
+}
+textarea { resize: vertical; min-height: 120px; }
+.ai-output { margin-top: 1rem; padding: 1rem; }
+.muted { color: var(--muted); }
+#ai-answer {
+  white-space: pre-wrap;
+  color: #dce6ff;
+  background: rgba(9, 16, 36, 0.9);
+  border: 1px solid var(--border);
+  border-radius: .7rem;
+  padding: .9rem;
+  min-height: 120px;
+}
+
 .faq { display: grid; gap: .8rem; }
 .faq details { padding: .9rem 1rem; }
 .faq summary { cursor: pointer; font-weight: 600; }
@@ -114,6 +153,6 @@ cite { display: block; margin-top: .8rem; color: var(--secondary); font-style: n
 
 @media (max-width: 920px) {
   .hero { grid-template-columns: 1fr; }
-  .cards-3, .cards-2 { grid-template-columns: 1fr; }
+  .cards-3, .cards-2, .ai-panel { grid-template-columns: 1fr; }
   nav { display: none; }
 }
