@@ -1,1 +1,30 @@
 # ai-tutor
+
+## Run locally (with backend)
+
+```bash
+cd /workspace/ai-tutor
+python3 server.py
+```
+
+Open: `http://127.0.0.1:4173`
+
+## Local Ollama setup
+
+```bash
+ollama serve
+ollama pull llama3.1:8b
+```
+
+The backend calls local Ollama at `http://127.0.0.1:11434/api/chat`.
+
+## Firebase setup
+
+Update `FIREBASE_CONFIG` in `script.js` with your Firebase project values.
+If config is not filled, app still works but Firebase save is skipped.
+
+## Endpoints
+
+- `GET /api/health`
+- `GET /api/pyqs?subject=Physics&year=2024`
+- `POST /api/ask` with JSON body `{ "model": "llama3.1:8b", "doubt": "..." }`

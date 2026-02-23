@@ -11,6 +11,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   </head>
   <body>
     <header class="navbar container">
@@ -18,8 +20,8 @@
       <nav>
         <a href="#features">Features</a>
         <a href="#ai-tutor">AI Tutor</a>
+        <a href="#pyqs">PYQs</a>
         <a href="#results">Results</a>
-        <a href="#faq">FAQ</a>
       </nav>
       <a class="btn btn-small" href="#join">Join Now</a>
     </header>
@@ -30,16 +32,11 @@
           <p class="eyebrow">India's Focused JEE Prep Platform</p>
           <h1>Turn daily effort into a top JEE rank.</h1>
           <p class="subtitle">
-            Structured study plans, adaptive practice, instant analytics, and an AI tutor powered by Ollama Cloud models.
+            Structured study plans, adaptive practice, instant analytics, local Ollama AI tutor, and PYQ practice in one place.
           </p>
           <div class="cta-row">
             <a class="btn" href="#join">Start Free Trial</a>
             <a class="btn btn-ghost" href="#ai-tutor">Try AI Doubt Solver</a>
-          </div>
-          <div class="stats-inline">
-            <span><strong>2.5L+</strong> Questions Solved</span>
-            <span><strong>50K+</strong> Aspirants</span>
-            <span><strong>98%</strong> Satisfaction</span>
           </div>
         </div>
         <div class="hero-card">
@@ -49,11 +46,6 @@
             <li><span>Chemistry:</span> Organic Mechanism Drill</li>
             <li><span>Maths:</span> Definite Integration PYQ Set</li>
           </ul>
-          <div class="progress">
-            <p>Daily Target Completion</p>
-            <div class="track"><div class="fill" style="width: 76%"></div></div>
-            <strong>76% complete</strong>
-          </div>
         </div>
       </section>
 
@@ -76,30 +68,25 @@
       </section>
 
       <section id="ai-tutor" class="container section">
-        <h2>AI Doubt Solver (Ollama Cloud Models)</h2>
-        <p class="subtitle">Connect your Ollama Cloud API key and ask any JEE Physics, Chemistry, or Maths question.</p>
+        <h2>AI Doubt Solver (Local Ollama Models)</h2>
+        <p class="subtitle">Model local machine par pull hona chahiye (example: <code>ollama pull llama3.1:8b</code>).</p>
 
         <div class="ai-panel">
           <div class="ai-config">
-            <label for="ollama-api-key">Ollama Cloud API Key</label>
-            <input id="ollama-api-key" type="password" placeholder="ollama_..." />
-
-            <label for="ollama-model">Model</label>
+            <label for="ollama-model">Local Ollama Model</label>
             <select id="ollama-model">
               <option value="llama3.1:8b">llama3.1:8b</option>
-              <option value="llama3.1:70b">llama3.1:70b</option>
-              <option value="qwen2.5:72b">qwen2.5:72b</option>
-              <option value="deepseek-r1:70b">deepseek-r1:70b</option>
+              <option value="qwen2.5:7b">qwen2.5:7b</option>
+              <option value="deepseek-r1:8b">deepseek-r1:8b</option>
             </select>
+
+            <label for="student-name">Student Name</label>
+            <input id="student-name" type="text" placeholder="Your name" />
           </div>
 
           <div class="ai-chat">
             <label for="doubt-input">Your Doubt</label>
-            <textarea
-              id="doubt-input"
-              rows="5"
-              placeholder="Example: A projectile is launched with speed u at angle θ. Derive the equation of trajectory and explain each term."
-            ></textarea>
+            <textarea id="doubt-input" rows="5" placeholder="Type your JEE doubt here..."></textarea>
             <button id="solve-btn" class="btn" type="button">Get AI Solution</button>
           </div>
         </div>
@@ -111,46 +98,32 @@
         </article>
       </section>
 
+      <section id="pyqs" class="container section">
+        <h2>PYQ Practice Section</h2>
+        <div class="pyq-filters">
+          <select id="pyq-subject">
+            <option value="all">All Subjects</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Maths">Maths</option>
+          </select>
+          <select id="pyq-year">
+            <option value="all">All Years</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+          </select>
+          <button id="load-pyq-btn" class="btn btn-small" type="button">Load PYQs</button>
+        </div>
+        <div id="pyq-list" class="grid cards-2"></div>
+      </section>
+
       <section id="results" class="container section result-band">
         <div>
           <h2>Trusted by serious aspirants</h2>
           <p>Students from 400+ cities use JEE Challenger to stay consistent and exam-ready.</p>
         </div>
-        <div class="grid cards-3">
-          <article class="metric-card"><strong>95%</strong><span>Students improved test score in 45 days</span></article>
-          <article class="metric-card"><strong>12K+</strong><span>PYQ tests attempted every week</span></article>
-          <article class="metric-card"><strong>4.8/5</strong><span>Average student rating across batches</span></article>
-        </div>
-      </section>
-
-      <section class="container section testimonials">
-        <h2>What toppers say</h2>
-        <div class="grid cards-2">
-          <blockquote class="card">
-            “The analysis dashboard helped me fix weak chapters quickly. My mock score jumped by 62 marks.”
-            <cite>— Arjun, JEE Main 99.2 percentile</cite>
-          </blockquote>
-          <blockquote class="card">
-            “The daily planner and timed practice sets kept me disciplined. Exactly what I needed.”
-            <cite>— Sneha, JEE Advanced qualified</cite>
-          </blockquote>
-        </div>
-      </section>
-
-      <section id="faq" class="container section faq">
-        <h2>Frequently asked questions</h2>
-        <details>
-          <summary>Is this for JEE Main or Advanced?</summary>
-          <p>Both. You get dedicated tracks, chapter-wise tests, and full-length mocks for each exam.</p>
-        </details>
-        <details>
-          <summary>Can beginners follow this platform?</summary>
-          <p>Yes, beginner-friendly roadmaps are included with foundation and revision schedules.</p>
-        </details>
-        <details>
-          <summary>Do you provide doubt support?</summary>
-          <p>Yes. You can raise doubts and get mentor explanations with conceptual clarity.</p>
-        </details>
       </section>
 
       <section id="join" class="container section cta-banner">
